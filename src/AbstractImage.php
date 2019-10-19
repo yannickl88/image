@@ -92,6 +92,16 @@ abstract class AbstractImage implements ImageInterface
         return array_values($rgb);
     }
 
+    public function resize(int $width, int $height): ImageInterface
+    {
+        return $this->sampleTo($this->rect(), [0, 0, $width, $height]);
+    }
+
+    public function crop(array $rect): ImageInterface
+    {
+        return $this->sampleTo($rect, [0, 0, $rect[2], $rect[3]]);
+    }
+
     public function save(string $filename): void
     {
         file_put_contents($filename, $this->data());

@@ -82,6 +82,8 @@ class AbstractImageTest extends TestCase
 
         self::assertSame([0, 0, 700, 875], $image->rect());
         self::assertSame([124, 192, 217, 0], $image->color(0, 0));
+        self::assertSame([0, 0, 100, 100], $image->resize(100, 100)->rect());
+        self::assertSame([0, 0, 100, 100], $image->crop([10, 10, 100, 100])->rect());
 
         $fs = new Filesystem();
         $fs->mkdir(self::$output_dir);

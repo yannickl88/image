@@ -24,6 +24,23 @@ interface ImageInterface
     public function sampleTo(array $source, ?array $target = null): self;
 
     /**
+     * Return a resized image based on the give new width and height.
+     *
+     * @param int $width
+     * @param int $height
+     * @return ImageInterface
+     */
+    public function resize(int $width, int $height): self;
+
+    /**
+     * Return a cropped image based on the given rectangle. This should be in the format [x, y, width, height].
+     *
+     * @param int[] $rect
+     * @return ImageInterface
+     */
+    public function crop(array $rect): self;
+
+    /**
      * Return the orientation of the image. In the case where both width and height are equal, the image will be
      * considered portrait.
      *
