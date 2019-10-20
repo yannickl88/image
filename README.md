@@ -28,6 +28,10 @@ $thumbnail->save('/some/thumbnail.png');
 $thumbnail = $image->sampleTo([50, 50, 100, 100], [0, 0, 50, 50]);
 $thumbnail->save('/some/thumbnail.png');
 
+// Set the quality, where 0 being low and 1 high (value between 0 and 1)
+$compressed = $image->quality(0.25);
+$compressed->save('/some/preview.png');
+
 // Get image width
 var_dump($image->width()); // int
 
@@ -47,6 +51,25 @@ var_dump($image->orientation()); // ImageInterface::ORIENTATION_LANDSCAPE
 header('Content-type: image/png');
 header('Content-Disposition: filename="image.png"');
 echo $image->data();
+```
+> **Note:** Quality is very subjective to the underlying implementation and is very opinionated. PNG quality is based on the [gd quality parameter](https://www.php.net/imagepng). GIF quality is based on the [color space](https://www.php.net/imagetruecolortopalette) (0 = 8 colors, 1 = 32 colors with dithering) 
+
+There is also some additional support for dealing with animated images. These methods also work for static images but do very little.
+
+Eamples usages:
+```php
+$image = \Yannickl88\Image\AbstractImage::fromFile('/some/image.gif');
+
+// Get duration
+var_dump($image->duration()); // float
+
+// Slice image down so it starts from frame 10
+$sliced = $image->slice(10);
+$sliced->save('/some/sliced.gif');
+
+// Slice image down from frame 10 with a length of 5
+$sliced = $image->slice(10, 5);
+$sliced->save('/some/sliced.gif');
 ```
 
 Installation

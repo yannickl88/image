@@ -13,15 +13,18 @@ class StaticImage extends AbstractImage
     private $_resource;
     private $_width;
     private $_height;
+    private $quality;
 
     /**
      * @param resource $resource
+     * @param int|null $quality
      *
      * @internal Use AbstractImage::fromFile()
      */
-    public function __construct($resource)
+    public function __construct($resource, ?int $quality = null)
     {
         $this->_resource = $resource;
+        $this->quality = $quality;
     }
 
     public function __destruct()
@@ -42,7 +45,7 @@ class StaticImage extends AbstractImage
             $target = [0, 0, $source[2], $source[3]];
         }
 
-        $new = new StaticImage(@imagecreatetruecolor($target[2], $target[3]));
+        $new = new StaticImage(@imagecreatetruecolor($target[2], $target[3]), $this->quality);
 
         // apply transformation
         if (!is_resource($new->_resource) || false === @imagecopyresampled(
@@ -67,7 +70,7 @@ class StaticImage extends AbstractImage
     {
         ob_start();
 
-        imagepng($this->_resource);
+        imagepng($this->_resource, null, $this->quality ?? -1);
         $image_data = ob_get_contents();
 
         ob_end_clean();
@@ -91,5 +94,34 @@ class StaticImage extends AbstractImage
         }
 
         return $this->_height;
+    }
+
+    public function duration(): float
+    {
+        return 0.0;
+    }
+
+    public function quality(float $quality): ImageInterface
+    {
+        if ($quality < 0 || $quality > 1) {
+            throw new \InvalidArgumentException('Quality must be a value between 0 and 1.');
+        }
+
+        $real_quality = (int) round(9 - ($quality * 9.0));
+
+        $copy = imagecreatetruecolor($this->width(), $this->height());
+
+        imagecopy($copy, $this->_resource, 0, 0, 0, 0, $this->_width, $this->_height);
+
+        return new self($copy, $real_quality);
+    }
+
+    public function slice(int $offset, ?int $length = null): ImageInterface
+    {
+        $copy = imagecreatetruecolor($this->width(), $this->height());
+
+        imagecopy($copy, $this->_resource, 0, 0, 0, 0, $this->_width, $this->_height);
+
+        return new self($copy, $this->quality);
     }
 }
