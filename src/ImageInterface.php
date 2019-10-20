@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace Yannickl88\Image;
 
+/**
+ * Implementations of this interface represent an image. All operations will return a copy with the applied operation.
+ */
 interface ImageInterface
 {
     public const ORIENTATION_LANDSCAPE = 1;
@@ -66,6 +69,15 @@ interface ImageInterface
     public function width(): int;
 
     /**
+     * Return the duration of the animation in seconds.
+     *
+     * NOTE: This only has effect for animated images. Static images will return 0, since they have no duration.
+     *
+     * @return float
+     */
+    public function duration(): float;
+
+    /**
      * Return bounding rectangle of the image. The array will be in order of: [x, y, width, height]
      *
      * @return int[]
@@ -95,4 +107,26 @@ interface ImageInterface
      * @return int[]
      */
     public function color(int $x, int $y): array;
+
+    /**
+     * Return an image with the given quality. Quality must be between 0 and 1 where 0 is low quality and 1 high
+     * quality.
+     *
+     * @param float $quality
+     * @return ImageInterface
+     * @throws \InvalidArgumentException when an invalid quality is given
+     */
+    public function quality(float $quality): self;
+
+    /**
+     * Return an image with only the frames in the given slice.
+     *
+     * NOTE: This only has effect for animated images. Static images will just return a copy.
+     *
+     * @param int $offset
+     * @param int|null $length
+     * @return ImageInterface
+     * @throws \InvalidArgumentException when an invalid length is given
+     */
+    public function slice(int $offset, ?int $length = null): self;
 }
