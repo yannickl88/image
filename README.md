@@ -1,4 +1,9 @@
-[![Build Status](https://travis-ci.org/yannickl88/image.svg?branch=master)](https://travis-ci.org/yannickl88/image)
+Easy reading, transforming and writing image files using PHP
+----------
+
+[![Latest Version](http://img.shields.io/packagist/v/yannickl88/image.svg?style=flat-square)](https://github.com/yannickl88/image/releases)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](https://github.com/yannickl88/image)
+[![Build Status](https://img.shields.io/travis/yannickl88/image/master.svg?style=flat-square)](https://travis-ci.org/yannickl88/image)
 
 Library for reading, transforming and writing image files.
 
