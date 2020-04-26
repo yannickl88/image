@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/yannickl88/image.svg?branch=master)](https://travis-ci.com/yannickl88/image)
+
 Library for reading, transforming and writing image files.
 
 This libary was born out of the need to have a consistent API for interacting with images. The goal is to have simple methods for common image tasks like cropping and resizing.
