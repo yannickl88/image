@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/yannickl88/image.svg?branch=master)](https://travis-ci.com/yannickl88/image)
+[![Build Status](https://travis-ci.org/yannickl88/image.svg?branch=master)](https://travis-ci.org/yannickl88/image)
 
 Library for reading, transforming and writing image files.
 
