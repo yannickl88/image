@@ -31,7 +31,12 @@ abstract class AbstractImage implements ImageInterface
             throw new FileNotFoundException("Cannot find file \"$file\".");
         }
 
-        $extension = substr($file, strrpos($file, '.'));
+        $pos = strrpos($file, '.');
+        if ($pos === false) {
+            throw new \InvalidArgumentException("File name does not contain a . extension (example.jpg)");
+        }
+
+        $extension = substr($file, $pos);
 
         // Is it an animated fig? In that case, make an AnimatedImage. Else use StaticImage.
         if ($extension === '.gif' && GifFrameExtractor::isAnimatedGif($file)) {
