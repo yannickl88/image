@@ -143,7 +143,7 @@ class AnimatedImage extends AbstractImage
     {
         $frames = [];
 
-        if ($offset + $length >= count($this->frames)) {
+        if ($offset + ($length ?? 0) >= count($this->frames)) {
             throw new \InvalidArgumentException(sprintf('Length + offset cannot exceed frame count (max %d).', count($this->frames)));
         }
 
