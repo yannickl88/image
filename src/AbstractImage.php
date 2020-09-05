@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Yannickl88\Image;
 
-use GifFrameExtractor\GifFrameExtractor;
 use Yannickl88\Image\Exception\FileNotFoundException;
 use Yannickl88\Image\Exception\ImageException;
 use Yannickl88\Image\Exception\UnsupportedExtensionException;
@@ -39,8 +38,12 @@ abstract class AbstractImage implements ImageInterface
         $extension = substr($file, $pos);
 
         // Is it an animated fig? In that case, make an AnimatedImage. Else use StaticImage.
-        if ($extension === '.gif' && GifFrameExtractor::isAnimatedGif($file)) {
-            $gfe = new GifFrameExtractor();
+        // Install "sybio/gif-creator" and "sybio/gif-frame-extractor" for animated gif support.
+        if ($extension === '.gif'
+            && class_exists(\GifFrameExtractor\GifFrameExtractor::class)
+            && \GifFrameExtractor\GifFrameExtractor::isAnimatedGif($file)
+        ) {
+            $gfe = new \GifFrameExtractor\GifFrameExtractor();
             $gfe->extract($file);
 
             $dimensions = $gfe->getFrameDimensions();
