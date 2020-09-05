@@ -44,6 +44,17 @@ interface ImageInterface
     public function crop(array $rect): self;
 
     /**
+     * Resize the image to fit inside the width and height. If already smaller and $exact is TRUE, the images will be
+     * enlarged to make it fit. This will respect the aspect ratio of the image.
+     *
+     * @param int $width
+     * @param int $height
+     * @param bool $exact
+     * @return ImageInterface
+     */
+    public function fit(int $width, int $height, bool $exact = false): self;
+
+    /**
      * Return the orientation of the image. In the case where both width and height are equal, the image will be
      * considered portrait.
      *

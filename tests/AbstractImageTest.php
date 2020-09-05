@@ -41,6 +41,24 @@ class AbstractImageTest extends TestCase
         ];
     }
 
+    public function fitProvider(): array
+    {
+        return [
+            [[0, 0, 100, 69], false, __DIR__ . '/resources/image1.gif'],
+            [[0, 0, 100, 69], true, __DIR__ . '/resources/image1.gif'],
+            [[0, 0, 80, 100], false, __DIR__ . '/resources/image2.png'],
+            [[0, 0, 80, 100], true, __DIR__ . '/resources/image2.png'],
+            [[0, 0, 100, 67], false, __DIR__ . '/resources/image3.jpg'],
+            [[0, 0, 100, 67], true, __DIR__ . '/resources/image3.jpg'],
+            [[0, 0, 100, 67], false, __DIR__ . '/resources/image4.jpeg'],
+            [[0, 0, 100, 67], true, __DIR__ . '/resources/image4.jpeg'],
+            [[0, 0, 100, 67], false, __DIR__ . '/resources/image5.gif'],
+            [[0, 0, 100, 67], true, __DIR__ . '/resources/image5.gif'],
+            [[0, 0, 60, 75], false, __DIR__ . '/resources/image7.png'],
+            [[0, 0, 80, 100], true, __DIR__ . '/resources/image7.png'],
+        ];
+    }
+
     protected function tearDown(): void
     {
         $fs = new Filesystem();
@@ -101,5 +119,15 @@ class AbstractImageTest extends TestCase
         $image = AbstractImage::fromFile($filename);
 
         self::assertSame($expected, $image->orientation());
+    }
+
+    /**
+     * @dataProvider fitProvider
+     */
+    public function testFit(array $expected_rect, bool $exact, string $filename): void
+    {
+        $image = AbstractImage::fromFile($filename);
+
+        self::assertSame($expected_rect, $image->fit(100, 100, $exact)->rect());
     }
 }

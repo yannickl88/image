@@ -107,6 +107,37 @@ abstract class AbstractImage implements ImageInterface
         return $this->sampleTo($rect, [0, 0, $rect[2], $rect[3]]);
     }
 
+    public function fit(int $width, int $height, bool $exact = false): ImageInterface
+    {
+        $rect = $this->rect();
+
+        $new_width = $rect[2];
+        $new_height = $rect[3];
+        $ratio = $new_width / $new_height;
+
+        // Is it smaller than the given width AND height?
+        if ($rect[2] < $width && $rect[3] < $height) {
+            if (!$exact) {
+                return $this;
+            }
+
+            $new_width = $width;
+            $new_height = $new_width / $ratio;
+        }
+
+        if ($new_width > $width) {
+            $new_width = $width;
+            $new_height = $new_width / $ratio;
+        }
+
+        if ($new_height > $height) {
+            $new_height = $height;
+            $new_width = $new_height * $ratio;
+        }
+
+        return $this->sampleTo($rect, [0, 0, (int) round($new_width), (int) round($new_height)]);
+    }
+
     public function save(string $filename): void
     {
         file_put_contents($filename, $this->data());
