@@ -27,6 +27,10 @@ $image = \Yannickl88\Image\AbstractImage::fromFile('/some/image.png');
 $thumbnail = $image->resize(50, 50);
 $thumbnail->save('/some/thumbnail.png');
 
+// Fit the image to a width and height of 50, 50 while maintaining it's aspect ratio.
+$thumbnail = $image->fit(50, 50);
+$thumbnail->save('/some/thumbnail.png');
+
 // Crop at 50, 50 with a square of 100 x 100
 $thumbnail = $image->crop([50, 50, 100, 100]);
 $thumbnail->save('/some/thumbnail.png');
