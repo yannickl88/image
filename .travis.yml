@@ -17,6 +17,7 @@ matrix:
     - php: 7.2
       env: COMPOSER_FLAGS="--prefer-stable"
     - php: 7.2
+    - php: 7.3
     - php: 7.2
       script: vendor/bin/psalm
       env: PSALM="true"

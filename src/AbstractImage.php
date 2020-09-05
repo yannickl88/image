@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Yannickl88\Image;
 
-use GifFrameExtractor\GifFrameExtractor;
 use Yannickl88\Image\Exception\FileNotFoundException;
 use Yannickl88\Image\Exception\ImageException;
 use Yannickl88\Image\Exception\UnsupportedExtensionException;
@@ -39,8 +38,12 @@ abstract class AbstractImage implements ImageInterface
         $extension = substr($file, $pos);
 
         // Is it an animated fig? In that case, make an AnimatedImage. Else use StaticImage.
-        if ($extension === '.gif' && GifFrameExtractor::isAnimatedGif($file)) {
-            $gfe = new GifFrameExtractor();
+        // Install "sybio/gif-creator" and "sybio/gif-frame-extractor" for animated gif support.
+        if ($extension === '.gif'
+            && class_exists(\GifFrameExtractor\GifFrameExtractor::class)
+            && \GifFrameExtractor\GifFrameExtractor::isAnimatedGif($file)
+        ) {
+            $gfe = new \GifFrameExtractor\GifFrameExtractor();
             $gfe->extract($file);
 
             $dimensions = $gfe->getFrameDimensions();
@@ -105,6 +108,37 @@ abstract class AbstractImage implements ImageInterface
     public function crop(array $rect): ImageInterface
     {
         return $this->sampleTo($rect, [0, 0, $rect[2], $rect[3]]);
+    }
+
+    public function fit(int $width, int $height, bool $exact = false): ImageInterface
+    {
+        $rect = $this->rect();
+
+        $new_width = $rect[2];
+        $new_height = $rect[3];
+        $ratio = $new_width / $new_height;
+
+        // Is it smaller than the given width AND height?
+        if ($rect[2] < $width && $rect[3] < $height) {
+            if (!$exact) {
+                return $this;
+            }
+
+            $new_width = $width;
+            $new_height = $new_width / $ratio;
+        }
+
+        if ($new_width > $width) {
+            $new_width = $width;
+            $new_height = $new_width / $ratio;
+        }
+
+        if ($new_height > $height) {
+            $new_height = $height;
+            $new_width = $new_height * $ratio;
+        }
+
+        return $this->sampleTo($rect, [0, 0, (int) round($new_width), (int) round($new_height)]);
     }
 
     public function save(string $filename): void
