@@ -63,4 +63,39 @@ class StaticImageTest extends TestCase
             [42],
         ];
     }
+
+    public function testTransparency(): void
+    {
+        $image = AbstractImage::fromFile(__DIR__ . '/resources/image8.png');
+
+        self::assertSame(127, $image->color(0, 0)[3]);
+        self::assertSame(0, $image->color(50, 50)[3]);
+
+        try {
+            $res = imagecreatefromstring($image->data());
+
+            self::assertSame(127, imagecolorsforindex($res, imagecolorat($res, 0, 0))['alpha']);
+            self::assertSame(0, imagecolorsforindex($res, imagecolorat($res, 50, 50))['alpha']);
+        } finally {
+            imagedestroy($res);
+        }
+
+        try {
+            $res = imagecreatefromstring($image->resize(50, 50)->data());
+
+            self::assertSame(127, imagecolorsforindex($res, imagecolorat($res, 0, 0))['alpha']);
+            self::assertSame(0, imagecolorsforindex($res, imagecolorat($res, 25, 25))['alpha']);
+        } finally {
+            imagedestroy($res);
+        }
+
+        try {
+            $res = imagecreatefromstring($image->slice(0)->data());
+
+            self::assertSame(127, imagecolorsforindex($res, imagecolorat($res, 0, 0))['alpha']);
+            self::assertSame(0, imagecolorsforindex($res, imagecolorat($res, 50, 50))['alpha']);
+        } finally {
+            imagedestroy($res);
+        }
+    }
 }

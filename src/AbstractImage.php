@@ -95,7 +95,7 @@ abstract class AbstractImage implements ImageInterface
     public function color(int $x, int $y): array
     {
         $res = $this->resource();
-        $rgb = imagecolorsforindex($res, imagecolorat($this->resource(), $x, $y));
+        $rgb = imagecolorsforindex($res, imagecolorat($res, $x, $y));
 
         return array_values($rgb);
     }
