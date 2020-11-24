@@ -25,6 +25,12 @@ class StaticImage extends AbstractImage
     {
         $this->_resource = $resource;
         $this->quality = $quality;
+
+        if (is_resource($this->_resource)) {
+            // Enable alpha blending
+            imagealphablending($this->_resource, false);
+            imagesavealpha($this->_resource, true);
+        }
     }
 
     public function __destruct()
@@ -111,6 +117,10 @@ class StaticImage extends AbstractImage
 
         $copy = imagecreatetruecolor($this->width(), $this->height());
 
+	    // Enable alpha blending
+	    imagealphablending($copy, false);
+	    imagesavealpha($copy, true);
+
         imagecopy($copy, $this->_resource, 0, 0, 0, 0, $this->_width, $this->_height);
 
         return new self($copy, $real_quality);
@@ -119,6 +129,10 @@ class StaticImage extends AbstractImage
     public function slice(int $offset, ?int $length = null): ImageInterface
     {
         $copy = imagecreatetruecolor($this->width(), $this->height());
+
+	    // Enable alpha blending
+	    imagealphablending($copy, false);
+	    imagesavealpha($copy, true);
 
         imagecopy($copy, $this->_resource, 0, 0, 0, 0, $this->_width, $this->_height);
 
