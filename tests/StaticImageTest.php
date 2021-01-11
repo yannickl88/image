@@ -47,15 +47,6 @@ class StaticImageTest extends TestCase
         $lower_quality = $image->quality(0.5);
 
         self::assertSame([124, 192, 217, 0], $lower_quality->color(0, 0));
-
-        $fs = new Filesystem();
-        $fs->mkdir(self::$output_dir);
-
-        $sampled->save(self::$output_dir . '/out.png');
-        $sampled->save(self::$output_dir . '/out.webp');
-
-        self::assertFileExists(self::$output_dir . '/out.png');
-        self::assertFileExists(self::$output_dir . '/out.webp');
     }
 
     public function testSavePng(): void
