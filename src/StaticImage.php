@@ -47,7 +47,13 @@ class StaticImage extends AbstractImage
 
     protected function supportedFileExtensionsForSaving(): array
     {
-        return ['.png', '.webp'];
+        $supported_extensions = ['.png'];
+
+        if (function_exists('imagewebp')) {
+            $supported_extensions[] = '.webp';
+        }
+
+        return $supported_extensions;
     }
 
     public function sampleTo(array $source, ?array $target = null): ImageInterface

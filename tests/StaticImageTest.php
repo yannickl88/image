@@ -58,6 +58,32 @@ class StaticImageTest extends TestCase
         self::assertFileExists(self::$output_dir . '/out.webp');
     }
 
+    public function testSavePng(): void
+    {
+        $image = AbstractImage::fromFile(__DIR__ . '/resources/image2.png');
+
+        $fs = new Filesystem();
+        $fs->mkdir(self::$output_dir);
+
+        $image->save(self::$output_dir . '/out.png');
+        self::assertFileExists(self::$output_dir . '/out.png');
+    }
+
+    public function testSaveWebp(): void
+    {
+        if (!function_exists('imagewebp')) {
+            $this->markTestSkipped('No webp support from current PHP version.');
+        }
+
+        $image = AbstractImage::fromFile(__DIR__ . '/resources/image2.png');
+
+        $fs = new Filesystem();
+        $fs->mkdir(self::$output_dir);
+
+        $image->save(self::$output_dir . '/out.webp');
+        self::assertFileExists(self::$output_dir . '/out.webp');
+    }
+
     public function testSampleToError(): void
     {
         $image = AbstractImage::fromFile(__DIR__ . '/resources/image2.png');

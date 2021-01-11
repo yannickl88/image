@@ -134,7 +134,7 @@ class AbstractImageTest extends TestCase
         $image = AbstractImage::fromFile(__DIR__ . '/resources/image2.png');
 
         $this->expectException(\LogicException::class);
-        $this->expectExceptionMessage('Cannot save image as ".test", it is not supported by the type. Supported extensions are: ".png", ".webp".');
+        $this->expectExceptionMessage('Cannot save image as ".test", it is not supported by the type. Supported extensions are:');
 
         $image->save(self::$output_dir . '/foo.test');
     }
