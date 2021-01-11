@@ -17,6 +17,12 @@ abstract class AbstractImage implements ImageInterface
     abstract protected function resource();
 
     /**
+     * Return a list of extensions allows for saving. If the extension for
+     * which 'save' is called not in the list, an error will be triggered.
+     */
+    abstract protected function supportedFileExtensionsForSaving(): array;
+
+    /**
      * Create an image based on a file.
      *
      * @param string $file
@@ -143,6 +149,22 @@ abstract class AbstractImage implements ImageInterface
 
     public function save(string $filename): void
     {
-        file_put_contents($filename, $this->data());
+        $pos = strrpos($filename, '.');
+        if ($pos === false) {
+            throw new \InvalidArgumentException("File name does not contain a . extension (example.jpg)");
+        }
+
+        $extension = substr($filename, $pos);
+        $extensions = $this->supportedFileExtensionsForSaving();
+
+        if (!in_array($extension, $extensions, true)) {
+            throw new \LogicException(sprintf(
+                'Cannot save image as "%s", it is not supported by the type. Supported extensions are: "%s".',
+                $extension,
+                implode('", "', $extensions)
+            ));
+        }
+
+        file_put_contents($filename, $this->data($extension));
     }
 }

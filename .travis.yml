@@ -12,13 +12,13 @@ env:
 
 matrix:
   include:
-    - php: 7.2
+    - php: 7.4
       env: COMPOSER_FLAGS="--prefer-lowest"
-    - php: 7.2
+    - php: 7.4
       env: COMPOSER_FLAGS="--prefer-stable"
-    - php: 7.2
+    - php: 7.4
     - php: 7.3
-    - php: 7.2
+    - php: 7.4
       script: vendor/bin/psalm
       env: PSALM="true"
 

@@ -73,6 +73,14 @@ class AbstractImageTest extends TestCase
         self::assertInstanceOf($expected_class, AbstractImage::fromFile($filename));
     }
 
+    public function testFromBadFileName(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('File name does not contain a . extension (example.jpg)');
+
+        AbstractImage::fromFile(__DIR__ . '/resources/foobar');
+    }
+
     public function testFromFileNotExists(): void
     {
         $this->expectException(FileNotFoundException::class);
@@ -109,6 +117,26 @@ class AbstractImageTest extends TestCase
         $image->save(self::$output_dir . '/out.png');
 
         self::assertFileExists(self::$output_dir . '/out.png');
+    }
+
+    public function testSaveBadFileName(): void
+    {
+        $image = AbstractImage::fromFile(__DIR__ . '/resources/image2.png');
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('File name does not contain a . extension (example.jpg)');
+
+        $image->save(self::$output_dir . '/foobar');
+    }
+
+    public function testUnsupportedFileName(): void
+    {
+        $image = AbstractImage::fromFile(__DIR__ . '/resources/image2.png');
+
+        $this->expectException(\LogicException::class);
+        $this->expectExceptionMessage('Cannot save image as ".test", it is not supported by the type. Supported extensions are: ".png", ".webp".');
+
+        $image->save(self::$output_dir . '/foo.test');
     }
 
     /**

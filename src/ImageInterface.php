@@ -105,9 +105,10 @@ interface ImageInterface
     /**
      * Return the binary data for the image. PNG for static images, GIF for animated ones.
      *
+     * @param string $extension
      * @return string
      */
-    public function data(): string;
+    public function data(string $extension): string;
 
     /**
      * Return the color at the given coordinate. Returned color is in RGBA format. ([red, green, blue, alpha]) where

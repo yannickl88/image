@@ -45,6 +45,11 @@ class StaticImage extends AbstractImage
         return $this->_resource;
     }
 
+    protected function supportedFileExtensionsForSaving(): array
+    {
+        return ['.png', '.webp'];
+    }
+
     public function sampleTo(array $source, ?array $target = null): ImageInterface
     {
         if (null === $target) {
@@ -72,11 +77,18 @@ class StaticImage extends AbstractImage
         return $new;
     }
 
-    public function data(): string
+    public function data(string $extension): string
     {
         ob_start();
 
-        imagepng($this->_resource, null, $this->quality ?? -1);
+        switch ($extension) {
+            case '.webp':
+                imagewebp($this->_resource, null, (int) round((($this->quality ?? 7.2) / 9.0) * 100));
+                break;
+            default:
+                imagepng($this->_resource, null, $this->quality ?? -1);
+                break;
+        }
         $image_data = ob_get_contents();
 
         ob_end_clean();

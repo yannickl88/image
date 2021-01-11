@@ -10,6 +10,19 @@ use Yannickl88\Image\Exception\ImageException;
  */
 class StaticImageTest extends TestCase
 {
+    private static $output_dir;
+
+    public static function setUpBeforeClass(): void
+    {
+        self::$output_dir = __DIR__ . '/' . uniqid('out_', false);
+    }
+
+    protected function tearDown(): void
+    {
+        $fs = new Filesystem();
+        $fs->remove(self::$output_dir);
+    }
+
     public function testGeneric(): void
     {
         $image = AbstractImage::fromFile(__DIR__ . '/resources/image2.png');
@@ -18,7 +31,7 @@ class StaticImageTest extends TestCase
         self::assertSame(875, $image->height());
         self::assertSame(0.0, $image->duration());
         self::assertSame([124, 192, 217, 0], $image->color(0, 0));
-        self::assertIsString($image->data());
+        self::assertIsString($image->data('.png'));
 
         $sampled = $image->sampleTo([0, 0, 50, 50]);
 
@@ -34,6 +47,15 @@ class StaticImageTest extends TestCase
         $lower_quality = $image->quality(0.5);
 
         self::assertSame([124, 192, 217, 0], $lower_quality->color(0, 0));
+
+        $fs = new Filesystem();
+        $fs->mkdir(self::$output_dir);
+
+        $sampled->save(self::$output_dir . '/out.png');
+        $sampled->save(self::$output_dir . '/out.webp');
+
+        self::assertFileExists(self::$output_dir . '/out.png');
+        self::assertFileExists(self::$output_dir . '/out.webp');
     }
 
     public function testSampleToError(): void
@@ -72,7 +94,7 @@ class StaticImageTest extends TestCase
         self::assertSame(0, $image->color(50, 50)[3]);
 
         try {
-            $res = imagecreatefromstring($image->data());
+            $res = imagecreatefromstring($image->data('.png'));
 
             self::assertSame(127, imagecolorsforindex($res, imagecolorat($res, 0, 0))['alpha']);
             self::assertSame(0, imagecolorsforindex($res, imagecolorat($res, 50, 50))['alpha']);
@@ -81,7 +103,7 @@ class StaticImageTest extends TestCase
         }
 
         try {
-            $res = imagecreatefromstring($image->resize(50, 50)->data());
+            $res = imagecreatefromstring($image->resize(50, 50)->data('.png'));
 
             self::assertSame(127, imagecolorsforindex($res, imagecolorat($res, 0, 0))['alpha']);
             self::assertSame(0, imagecolorsforindex($res, imagecolorat($res, 25, 25))['alpha']);
@@ -90,7 +112,7 @@ class StaticImageTest extends TestCase
         }
 
         try {
-            $res = imagecreatefromstring($image->slice(0)->data());
+            $res = imagecreatefromstring($image->slice(0)->data('.png'));
 
             self::assertSame(127, imagecolorsforindex($res, imagecolorat($res, 0, 0))['alpha']);
             self::assertSame(0, imagecolorsforindex($res, imagecolorat($res, 50, 50))['alpha']);

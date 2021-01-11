@@ -52,6 +52,11 @@ class AnimatedImage extends AbstractImage
         return $this->frames[0];
     }
 
+    protected function supportedFileExtensionsForSaving(): array
+    {
+        return ['.gif'];
+    }
+
     public function sampleTo(array $source, ?array $target = null): ImageInterface
     {
         if (null === $target) {
@@ -89,7 +94,7 @@ class AnimatedImage extends AbstractImage
         return new self($new_frames, $this->durations, $target[2], $target[3], $this->quality);
     }
 
-    public function data(): string
+    public function data(string $extension): string
     {
         $gc = new GifCreator();
         $gc->create($this->frames, $this->durations);
