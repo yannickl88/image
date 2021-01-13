@@ -68,7 +68,7 @@ echo $image->data('.png');
 
 Migration
 ------------
-See [Migration Guide][MIGRATION.md].
+See [Migration Guide](MIGRATION.md).
 
 Installation
 ------------
