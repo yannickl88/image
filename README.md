@@ -11,17 +11,19 @@ This libary was born out of the need to have a consistent API for interacting wi
 
 Usage
 ------------
-Supported file extensions:
+Supported file extensions for reading:
 * PNG
 * JPG
 * JPEG
 * GIF
 
-> **Note:** When saving an image, the PNG format is used for static images and GIF for animated images. It is **not** possible to save as JPG. 
+Supported file extension for writing:
+* PNG
+* WEBP (if mod gd has been enabled with WebP support)
 
 Example usages:
 ```php
-$image = \Yannickl88\Image\AbstractImage::fromFile('/some/image.png');
+$image = \Yannickl88\Image\Image::fromFile('/some/image.png');
 
 // Resize to 50 x 50
 $thumbnail = $image->resize(50, 50);
@@ -61,27 +63,12 @@ var_dump($image->orientation()); // ImageInterface::ORIENTATION_LANDSCAPE
 // Get the raw data and output it
 header('Content-type: image/png');
 header('Content-Disposition: filename="image.png"');
-echo $image->data();
+echo $image->data('.png');
 ```
-> **Note:** Quality is very subjective to the underlying implementation and is very opinionated. PNG quality is based on the [gd quality parameter](https://www.php.net/imagepng). GIF quality is based on the [color space](https://www.php.net/imagetruecolortopalette) (0 = 8 colors, 1 = 32 colors with dithering) 
 
-There is also some additional support for dealing with animated images. These methods also work for static images but do very little.
-
-Eamples usages:
-```php
-$image = \Yannickl88\Image\AbstractImage::fromFile('/some/image.gif');
-
-// Get duration
-var_dump($image->duration()); // float
-
-// Slice image down so it starts from frame 10
-$sliced = $image->slice(10);
-$sliced->save('/some/sliced.gif');
-
-// Slice image down from frame 10 with a length of 5
-$sliced = $image->slice(10, 5);
-$sliced->save('/some/sliced.gif');
-```
+Migration
+------------
+See [Migration Guide][MIGRATION.md].
 
 Installation
 ------------
