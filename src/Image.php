@@ -73,7 +73,7 @@ class Image
         $this->resource = $resource;
         $this->quality = $quality;
 
-        if (is_resource($this->resource)) {
+        if (self::isGdResource($this->resource)) {
             // Enable alpha blending
             imagealphablending($this->resource, false);
             imagesavealpha($this->resource, true);
@@ -82,7 +82,7 @@ class Image
 
     public function __destruct()
     {
-        if (is_resource($this->resource)) {
+        if (self::isGdResource($this->resource)) {
             imagedestroy($this->resource);
         }
     }
@@ -268,10 +268,14 @@ class Image
             $target = [0, 0, $source[2], $source[3]];
         }
 
-        $new = new Image(@imagecreatetruecolor($target[2], $target[3]), $this->quality);
+        try {
+            $new = new Image(@imagecreatetruecolor($target[2], $target[3]), $this->quality);
+        } catch (\ValueError $e) {
+            throw new ImageException('Cannot resample image.', 0, $e);
+        }
 
         // apply transformation
-        if (!is_resource($new->resource) || false === @imagecopyresampled(
+        if (!self::isGdResource($new->resource) || false === @imagecopyresampled(
             $new->resource,
             $this->resource,
             $target[0],
@@ -339,5 +343,14 @@ class Image
         $extension = substr($filename, $pos);
 
         file_put_contents($filename, $this->data($extension));
+    }
+
+    private static function isGdResource($resource): bool
+    {
+        if (class_exists(\GdImage::class) && $resource instanceof \GdImage) {
+            return true;
+        }
+
+        return is_resource($resource);
     }
 }

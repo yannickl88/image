@@ -10,7 +10,7 @@ use Yannickl88\Image\Exception\UnsupportedExtensionException;
 /**
  * @covers \Yannickl88\Image\Image
  */
-class StaticImageTest extends TestCase
+class ImageTest extends TestCase
 {
     private static $output_dir;
 
