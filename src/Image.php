@@ -74,6 +74,8 @@ class Image
         $this->quality = $quality;
 
         if (self::isGdResource($this->resource)) {
+            // Ensure we have the right palatte
+            imagepalettetotruecolor($this->resource);
             // Enable alpha blending
             imagealphablending($this->resource, false);
             imagesavealpha($this->resource, true);
